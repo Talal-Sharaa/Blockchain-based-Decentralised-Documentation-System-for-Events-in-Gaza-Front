@@ -18,7 +18,7 @@ const App = () => {
         const signer = await provider.getSigner();
         const contract = getContract(
           ContractABI.abi,
-          "0xf2A3287c00cA86B368AFa7474B1d30366F726163",
+          "0xd552AE9F2FF6C671BCdC4f855a0913FC57788307",
           signer
         );
 

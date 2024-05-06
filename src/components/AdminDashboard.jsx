@@ -1,12 +1,17 @@
 import React, { useState, useEffect } from "react";
+import { TextField, Button, Grid, Typography } from "@mui/material";
 import { getContract, getProvider } from "../utils/Web3Utils.js";
 import ContractABI from "../utils/NewsPlatform.json"; // Import your contract's ABI
-import "water.css/out/water.css";
+import "./AdminDashboard.css";
+
 const AdminDashboard = () => {
   const [contract, setContract] = useState(null);
   const [newAdminAddress, setNewAdminAddress] = useState("");
   const [newPublisherAddress, setNewPublisherAddress] = useState("");
   const [newPublisherName, setNewPublisherName] = useState("");
+  const [isFocused1, setIsFocused1] = useState(false);
+  const [isFocused2, setIsFocused2] = useState(false);
+  const [isFocused3, setIsFocused3] = useState(false);
 
   useEffect(() => {
     const init = async () => {
@@ -50,33 +55,84 @@ const AdminDashboard = () => {
   };
 
   return (
-    <div>
-      <h1>Admin Dashboard</h1>
-      {/* ... Form for granting admin role ... */}
-      <form onSubmit={handleAdminSubmit}>
-        <input
-          value={newAdminAddress}
-          onChange={(e) => setNewAdminAddress(e.target.value)}
-          placeholder="Enter User's Address"
-        />
-        <button type="submit">Grant Admin Role</button>
-      </form>
-
-      {/* Form for registering publisher */}
-      <form onSubmit={handlePublisherSubmit}>
-        <input
-          value={newPublisherAddress}
-          onChange={(e) => setNewPublisherAddress(e.target.value)}
-          placeholder="Enter Publisher's Address"
-        />
-        <input
-          value={newPublisherName}
-          onChange={(e) => setNewPublisherName(e.target.value)}
-          placeholder="Enter Publisher's Name"
-        />
-        <button type="submit">Register Publisher</button>
-      </form>
-    </div>
+    <Grid container spacing={2} style={{ marginTop: "1vh" }}>
+      <Grid item xs={12}>
+        <Typography variant="h5" gutterBottom>
+          Admin Dashboard
+        </Typography>
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant="h6" gutterBottom>
+          Grant Admin Role
+        </Typography>
+        <form onSubmit={handleAdminSubmit} style={{ marginTop: "2.3vh" }}>
+          <TextField
+            label="Enter User's Address"
+            value={newAdminAddress}
+            onChange={(e) => setNewAdminAddress(e.target.value)}
+            fullWidth
+            required
+            onFocus={() => setIsFocused1(true)}
+            onBlur={() => setIsFocused1(false)}
+            InputLabelProps={{
+              style: {
+                color: isFocused1 ? "#1976D2" : "#f8f8ff",
+                opacity: isFocused1 ? "1.0" : "0.2",
+              },
+            }}
+          />
+          <Button type="submit" variant="contained" sx={{ mt: 1 }}>
+            Grant Admin Role
+          </Button>
+        </form>
+      </Grid>
+      <Grid item xs={12}>
+        <Typography variant="h6" gutterBottom>
+          Register Publisher
+        </Typography>
+        <form onSubmit={handlePublisherSubmit} style={{ marginTop: "1.8vh" }}>
+          <TextField
+            label="Enter Publisher's Address"
+            value={newPublisherAddress}
+            onChange={(e) => setNewPublisherAddress(e.target.value)}
+            fullWidth
+            required
+            onFocus={() => setIsFocused2(true)}
+            onBlur={() => setIsFocused2(false)}
+            InputLabelProps={{
+              style: {
+                color: isFocused2 ? "#1976D2" : "#f8f8ff",
+                opacity: isFocused2 ? "1.0" : "0.2",
+              },
+            }}
+          />
+          <TextField
+            style={{ marginTop: "2.3vh" }}
+            label="Enter Publisher's Name"
+            value={newPublisherName}
+            onChange={(e) => setNewPublisherName(e.target.value)}
+            fullWidth
+            required
+            onFocus={() => setIsFocused3(true)}
+            onBlur={() => setIsFocused3(false)}
+            InputLabelProps={{
+              style: {
+                color: isFocused3 ? "#1976D2" : "#f8f8ff",
+                opacity: isFocused3 ? "1.0" : "0.2",
+              },
+            }}
+          />
+          <Button
+            type="submit"
+            variant="contained"
+            sx={{ mt: 1 }}
+            style={{ marginTop: "2.3vh" }}
+          >
+            Register Publisher
+          </Button>
+        </form>
+      </Grid>
+    </Grid>
   );
 };
 

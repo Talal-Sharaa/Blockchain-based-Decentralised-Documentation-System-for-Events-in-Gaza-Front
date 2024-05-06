@@ -6,7 +6,19 @@ import {
 } from "../utils/Web3Utils.js";
 import ContractABI from "../utils/NewsPlatform.json";
 import "water.css/out/water.css";
-import Article from './Article'; // Import the Article component
+import Article from "./Article"; // Import the Article component
+
+// Import Material-UI components
+import Box from "@mui/material/Box";
+import Typography from "@mui/material/Typography";
+import Select from "@mui/material/Select";
+import MenuItem from "@mui/material/MenuItem";
+import FormControl from "@mui/material/FormControl";
+import InputLabel from "@mui/material/InputLabel";
+import Grid from "@mui/material/Grid";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import CircularProgress from "@mui/material/CircularProgress";
 
 const ArticleList = () => {
   const [isLoading, setIsLoading] = useState(false);
@@ -89,28 +101,51 @@ const ArticleList = () => {
   }, [publishers, selectedPublisher, fetchArticles]);
 
   return (
-    <div>
-      <h1>News Articles</h1>
-      <form onSubmit={handleSubmit}>
-        <select
-          value={selectedPublisher}
+    <Box sx={{ p: 2 }}>
+      {" "}
+      {/* Container with padding */}
+      <Typography variant="h4" gutterBottom>
+        News Articles
+      </Typography>
+      <FormControl fullWidth sx={{ mb: 2 }}>
+        {" "}
+        {/* Form for publisher selection */}
+        <InputLabel id="publisher-select-label" style={{color:"#F5F5F5", opacity:"0.2"}}>Select Publisher</InputLabel>
+        <Select
+          labelId="publisher-select-label"
+          value={selectedPublisher || ""} // Handle empty value
           onChange={(e) => setSelectedPublisher(e.target.value)}
+          label="Select Publisher"
+          sx={{ color: "#f5f5f5" }} // off white color
         >
-          <option value="">Select Publisher</option>
           {publishers.map((publisher) => (
-            <option key={publisher.publisherID} value={publisher.name}>
+            <MenuItem key={publisher.publisherID} value={publisher.name}>
               {publisher.name}
-            </option>
+            </MenuItem>
           ))}
-        </select>
-        <button type="submit">Fetch Articles</button>
-      </form>
-
-      {isLoading && <div>Loading Publishers...</div>}
-      {articles.map((article) => (
-        <Article key={article.id} article={article} /> // Use the Article component
-      ))}
-    </div>
+        </Select>
+      </FormControl>
+      {isLoading ? (
+        <Box sx={{ display: "flex", justifyContent: "center" }}>
+          <CircularProgress />
+        </Box>
+      ) : (
+        <Grid container spacing={3}>
+          {" "}
+          {/* Grid layout for articles */}
+          {articles.map((article) => (
+            <Grid item xs={12} sm={12} md={6} key={article.id}>
+              <Card>
+                <CardContent>
+                  <Article article={article} />{" "}
+                  {/* Use the Article component */}
+                </CardContent>
+              </Card>
+            </Grid>
+          ))}
+        </Grid>
+      )}
+    </Box>
   );
 };
 

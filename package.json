@@ -9,6 +9,8 @@
     "@metamask/detect-provider": "^2.0.0",
     "@metamask/onboarding": "^1.0.1",
     "@mui/material": "^5.15.14",
+    "@mui/styles": "^5.15.16",
+    "@mui/system": "^5.15.15",
     "@testing-library/jest-dom": "^5.17.0",
     "@testing-library/react": "^13.4.0",
     "@testing-library/user-event": "^13.5.0",

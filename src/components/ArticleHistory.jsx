@@ -1,6 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { getContract, getProvider } from "../utils/Web3Utils.js";
 import ContractABI from "../utils/NewsPlatform.json";
+import {
+  List,
+  ListItem,
+  ListItemText,
+  ListItemSecondaryAction,
+  Typography,
+} from "@mui/material";
 
 const ArticleHistory = ({ articleId }) => {
   const [history, setHistory] = useState([]);
@@ -32,19 +39,37 @@ const ArticleHistory = ({ articleId }) => {
   }, [articleId]);
 
   return (
-    <div>
+    <List>
       {history.map((version, index) => (
-        <div key={index}>
-          <h2>Version {version.versionNumber}</h2>
-          <p>Editor: {version.editorID}</p>
-          <p>
-            Timestamp:{" "}
-            {new Date(Number(version.editTimestamp) * 1000).toLocaleString()}
-          </p>
-          <p>Article Hash: {version.articleHash}</p>
-        </div>
+        <ListItem
+          key={index}
+          secondaryAction={
+            <ListItemSecondaryAction>
+              <Typography variant="caption" display="block">
+                Article Hash: {version.articleHash}
+              </Typography>
+            </ListItemSecondaryAction>
+          }
+        >
+          <ListItemText
+            primary={`Version ${version.versionNumber}`}
+            secondary={
+              <>
+                <Typography variant="caption" display="block">
+                  Editor: {version.editorID}
+                </Typography>
+                <Typography variant="caption" display="block">
+                  Timestamp:{" "}
+                  {new Date(
+                    Number(version.editTimestamp) * 1000
+                  ).toLocaleString()}
+                </Typography>
+              </>
+            }
+          />
+        </ListItem>
       ))}
-    </div>
+    </List>
   );
 };
 

@@ -1,7 +1,17 @@
 import React, { useState, useEffect } from "react";
 import { getContract, getProvider } from "../utils/Web3Utils.js";
 import ContractABI from "../utils/NewsPlatform.json";
-import EditArticle from "./EditArticle";
+import EditArticle from "./EditArticle"; // Assuming you have the revamped EditArticle
+
+// Material-UI Imports
+import Grid from "@mui/material/Grid";
+import Card from "@mui/material/Card";
+import CardHeader from "@mui/material/CardHeader";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import CircularProgress from "@mui/material/CircularProgress";
+import Box from "@mui/material/Box";
+import { margin } from "@mui/system";
 
 const MyArticles = () => {
   const [articles, setArticles] = useState([]);
@@ -33,19 +43,34 @@ const MyArticles = () => {
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "50vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
 
   return (
-    <div>
+    <Grid container spacing={3} style={{ marginTop: "1vh" }}>
       {articles.map((article) => (
-        <div key={article.id}>
-          <h2>{article.title}</h2>
-          <p>{article.content}</p>
-          <EditArticle articleId={article.id} />
-        </div>
+        <Grid item xs={12} sm={6} md={4} key={article.id}>
+          <Card>
+            <CardHeader title={article.title} />
+            <CardContent>
+              <Typography variant="body2">{article.content}</Typography>
+              <EditArticle articleId={article.id} />
+            </CardContent>
+          </Card>
+        </Grid>
       ))}
-    </div>
+    </Grid>
   );
 };
 

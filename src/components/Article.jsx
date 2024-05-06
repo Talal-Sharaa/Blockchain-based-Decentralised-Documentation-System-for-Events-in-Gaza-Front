@@ -1,7 +1,15 @@
-import React, { useState} from "react";
+import React, { useState, useEffect } from "react";
 import EditArticle from "./EditArticle";
 import { getContract, getProvider } from "../utils/Web3Utils.js";
 import ContractABI from "../utils/NewsPlatform.json";
+import {
+  Button,
+  Card,
+  CardContent,
+  CardActions,
+  Typography,
+  CircularProgress,
+} from "@mui/material";
 
 const Article = ({ article }) => {
   const [articleHistory, setArticleHistory] = useState(null);
@@ -27,32 +35,56 @@ const Article = ({ article }) => {
   };
 
   return (
-    <div>
-      <h2>{article.title}</h2>
-      <p>{article.content}</p>
-      <EditArticle articleId={article.id} />
-
-      <button onClick={() => fetchArticleHistory(article.id)}>
-        View Version History
-      </button>
-
-      {isLoadingHistory && <div>Loading history...</div>}
-
+    <Card>
+      <CardContent>
+        <Typography variant="h5" gutterBottom sx={{ color: "black" }}>
+          {article.title}
+        </Typography>
+        <Typography variant="body2" component="p">
+          {article.content}
+        </Typography>
+      </CardContent>
+      <CardActions sx={{ display: "flex", justifyContent: "space-between" }}>
+        <EditArticle articleId={article.id} />
+        <Button
+          variant="contained"
+          onClick={() => fetchArticleHistory(article.id)}
+          disabled={isLoadingHistory}
+        >
+          {isLoadingHistory ? (
+            <CircularProgress size="small" />
+          ) : (
+            "View Version History"
+          )}
+        </Button>
+      </CardActions>
       {articleHistory && (
-        <div>
-          <h2>Version History</h2>
+        <CardContent>
+          <Typography variant="h6" gutterBottom>
+            Version History
+          </Typography>
           {articleHistory.map((version) => (
             <div key={version.versionNumber}>
-              <h3>Version {version.versionNumber}</h3>
-              <h4>{version.title}</h4> {/* Display the title */}
-              <p>{version.content}</p> {/* Display the content */}
-              <p>Edited by: {version.editorID}</p>
-              <p>Timestamp: {version.editTimestamp}</p>
+              <Typography variant="subtitle1" gutterBottom>
+                Version {version.versionNumber}
+              </Typography>
+              <Typography variant="body2" gutterBottom>
+                {version.title}
+              </Typography>
+              <Typography variant="body2" component="p">
+                {version.content}
+              </Typography>
+              <Typography variant="caption" display="block">
+                Edited by: {version.editorID}
+              </Typography>
+              <Typography variant="caption" display="block">
+                Timestamp: {version.editTimestamp}
+              </Typography>
             </div>
           ))}
-        </div>
+        </CardContent>
       )}
-    </div>
+    </Card>
   );
 };
 

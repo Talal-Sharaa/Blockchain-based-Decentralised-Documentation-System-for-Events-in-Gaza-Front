@@ -26,7 +26,7 @@ const SubmitArticle = () => {
 
       const newsContract = getContract(
         ContractABI.abi,
-        "0xa7b99EF16A5da14aaa98888cdda3228BE329CA07",
+        "0xEe41A8D2F47A7C950ef20DCe4F1b5AADB1fB535D",
         signer
       );
       setContract(newsContract);

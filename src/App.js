@@ -8,7 +8,7 @@ import MyArticles from "./components/MyArticles";
 import ProtectedRoute from "./components/ProtectedRoute"; // Import your ProtectedRoute component
 import { getProvider, getContract, getUserRole } from "./utils/Web3Utils";
 import ContractABI from "./utils/NewsPlatform.json";
-
+import FavoriteArticles from "./components/FavoriteArticles";
 const App = () => {
   const [userRole, setUserRole] = useState(null);
 
@@ -19,7 +19,7 @@ const App = () => {
         const signer = await provider.getSigner();
         const contract = getContract(
           ContractABI.abi,
-          "0xa7b99EF16A5da14aaa98888cdda3228BE329CA07",
+          "0xEe41A8D2F47A7C950ef20DCe4F1b5AADB1fB535D",
           signer
         );
 
@@ -73,6 +73,18 @@ const App = () => {
             </ProtectedRoute>
           }
         />
+        <Route
+          path="/favourite-articles"
+          element={
+            <ProtectedRoute
+              userRole={userRole}
+              allowedRoles={["GUEST"]}
+            >
+              <FavoriteArticles />
+            </ProtectedRoute>
+          }
+        />
+
       </Routes>
     </Router>
   );

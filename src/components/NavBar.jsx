@@ -24,7 +24,7 @@ const NavBar = () => {
         const signer = await provider.getSigner();
         const contract = getContract(
           ContractABI.abi,
-          "0xa7b99EF16A5da14aaa98888cdda3228BE329CA07",
+          "0xEe41A8D2F47A7C950ef20DCe4F1b5AADB1fB535D",
           signer
         );
 
@@ -73,6 +73,13 @@ const NavBar = () => {
             )}
             {(userRole === "ADMIN" || userRole === "PUBLISHER") && (
               <Tab label="My Articles" to="/my-articles" component={Link} />
+            )}
+            {(userRole !== "ADMIN" && userRole !== "PUBLISHER") && (
+              <Tab
+                label="My Favourite"
+                to="/favourite-articles"
+                component={Link}
+              />
             )}
           </Tabs>
         </Toolbar>

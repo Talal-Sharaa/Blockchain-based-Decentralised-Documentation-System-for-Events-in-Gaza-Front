@@ -10,6 +10,7 @@ import {
   Typography,
   CircularProgress,
 } from "@mui/material";
+import FavoriteButton from "./FavoriteButton";
 
 const Article = ({ article }) => {
   const [articleHistory, setArticleHistory] = useState(null);
@@ -21,14 +22,13 @@ const Article = ({ article }) => {
       const provider = await getProvider();
       const contract = getContract(
         ContractABI.abi,
-        "0xa7b99EF16A5da14aaa98888cdda3228BE329CA07",
+        "0xEe41A8D2F47A7C950ef20DCe4F1b5AADB1fB535D",
         provider
       );
       const history = await contract.getArticleHistory(articleId);
       setArticleHistory(history);
     } catch (error) {
       console.error("Error fetching article history:", error);
-      // Handle the error appropriately (display an error message)
     } finally {
       setIsLoadingHistory(false);
     }
@@ -57,7 +57,9 @@ const Article = ({ article }) => {
             "View Version History"
           )}
         </Button>
+        <FavoriteButton articleId={article.id} />
       </CardActions>
+
       {articleHistory && (
         <CardContent>
           <Typography variant="h6" gutterBottom>

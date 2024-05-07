@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Navigate from "./NavBar";
+import WarningSign from './WarningSign'; // Import your WarningSign component
 import { getProvider, getContract, getUserRole } from "../utils/Web3Utils";
 import ContractABI from "../utils/NewsPlatform.json"; // Import your contract's ABI
 
@@ -19,7 +20,7 @@ const ProtectedRoute = ({
         const signer = await provider.getSigner();
         const contract = getContract(
           ContractABI.abi,
-          "0xa7b99EF16A5da14aaa98888cdda3228BE329CA07",
+          "0xEe41A8D2F47A7C950ef20DCe4F1b5AADB1fB535D",
           signer
         );
 
@@ -41,7 +42,7 @@ const ProtectedRoute = ({
   }
 
   if (!allowedRoles.includes(userRole)) {
-    return <Navigate to="/" replace />;
+    return <WarningSign />; // Render the WarningSign component instead of the Navigate component
   }
 
   return children;

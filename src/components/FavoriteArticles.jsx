@@ -1,8 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { getContract, getProvider } from "../utils/Web3Utils.js";
 import ContractABI from "../utils/NewsPlatform.json";
-import EditArticle from "./EditArticle"; // Assuming you have the revamped EditArticle
-import FavoriteArticles from "./FavoriteArticles"; // Import the FavoriteArticles component
 
 // Material-UI Imports
 import Grid from "@mui/material/Grid";
@@ -13,34 +11,44 @@ import Typography from "@mui/material/Typography";
 import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 
-const MyArticles = () => {
+const FavoriteArticles = () => {
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [contract, setContract] = useState(null);
 
   useEffect(() => {
-    fetchArticles();
+    const init = async () => {
+      const provider = await getProvider();
+      const signer = await provider.getSigner();
+      const newsContract = getContract(
+        ContractABI.abi,
+        "0xEe41A8D2F47A7C950ef20DCe4F1b5AADB1fB535D",
+        signer
+      );
+      setContract(newsContract);
+    };
+    init();
   }, []);
 
-  const fetchArticles = async () => {
-    const provider = await getProvider();
-    const signer = await provider.getSigner();
-    const contract = getContract(
-      ContractABI.abi,
-      "0xEe41A8D2F47A7C950ef20DCe4F1b5AADB1fB535D",
-      signer
-    );
+  useEffect(() => {
+    const fetchArticles = async () => {
+      try {
+        setIsLoading(true);
 
-    const currentAccount = await signer.getAddress();
-    const allArticles = await contract.getAllArticles(); // Assuming this function exists in the contract
+        // Call your contract's getFavorites function
+        const favoriteArticles = await contract.getFavorites();
+        setArticles(favoriteArticles);
+      } catch (error) {
+        // ... handle the error ...
+      } finally {
+        setIsLoading(false);
+      }
+    };
 
-    const myArticles = allArticles.filter(
-      (article) =>
-        article.publisherID.toLowerCase() === currentAccount.toLowerCase()
-    );
-
-    setArticles(myArticles);
-    setIsLoading(false);
-  };
+    if (contract) {
+      fetchArticles();
+    }
+  }, [contract]);
 
   if (isLoading) {
     return (
@@ -65,14 +73,12 @@ const MyArticles = () => {
             <CardHeader title={article.title} />
             <CardContent>
               <Typography variant="body2">{article.content}</Typography>
-              <EditArticle articleId={article.id} />
             </CardContent>
           </Card>
         </Grid>
       ))}
-      <FavoriteArticles /> {/* Render the FavoriteArticles component */}
     </Grid>
   );
 };
 
-export default MyArticles;
+export default FavoriteArticles;

@@ -18,21 +18,12 @@ const ArticleHistory = ({ articleId }) => {
       const signer = await provider.getSigner();
       const contract = getContract(
         ContractABI.abi,
-        "0xEe41A8D2F47A7C950ef20DCe4F1b5AADB1fB535D",
+        "0x3EAbaDA033e098F63ec359c946398167A13dC5e0",
         signer
       );
 
       const fetchedHistory = await contract.getArticleHistory(articleId);
-      const historyArray = [];
-      for (let i = 0; i < fetchedHistory[0].length; i++) {
-        historyArray.push({
-          versionNumber: fetchedHistory[0][i],
-          editorID: fetchedHistory[1][i],
-          editTimestamp: fetchedHistory[2][i],
-          articleHash: fetchedHistory[3][i],
-        });
-      }
-      setHistory(historyArray);
+      setHistory(fetchedHistory);
     };
 
     fetchHistory();
@@ -46,7 +37,6 @@ const ArticleHistory = ({ articleId }) => {
           secondaryAction={
             <ListItemSecondaryAction>
               <Typography variant="caption" display="block">
-                Article Hash: {version.articleHash}
               </Typography>
             </ListItemSecondaryAction>
           }
@@ -63,6 +53,12 @@ const ArticleHistory = ({ articleId }) => {
                   {new Date(
                     Number(version.editTimestamp) * 1000
                   ).toLocaleString()}
+                </Typography>
+                <Typography variant="caption" display="block">
+                  title: {version.title}
+                </Typography>
+                <Typography variant="caption" display="block">
+                  Content: {version.content}
                 </Typography>
               </>
             }

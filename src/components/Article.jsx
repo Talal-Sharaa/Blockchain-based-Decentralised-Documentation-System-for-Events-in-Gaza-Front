@@ -15,6 +15,7 @@ import FavoriteButton from "./FavoriteButton";
 const Article = ({ article }) => {
   const [articleHistory, setArticleHistory] = useState(null);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
+  const [isEditing, setIsEditing] = useState(false);
 
   const fetchArticleHistory = async (articleId) => {
     setIsLoadingHistory(true);
@@ -22,7 +23,7 @@ const Article = ({ article }) => {
       const provider = await getProvider();
       const contract = getContract(
         ContractABI.abi,
-        "0xEe41A8D2F47A7C950ef20DCe4F1b5AADB1fB535D",
+        "0x3EAbaDA033e098F63ec359c946398167A13dC5e0",
         provider
       );
       const history = await contract.getArticleHistory(articleId);
@@ -45,19 +46,28 @@ const Article = ({ article }) => {
         </Typography>
       </CardContent>
       <CardActions sx={{ display: "flex", justifyContent: "space-between" }}>
-        <EditArticle articleId={article.id} />
-        <Button
-          variant="contained"
-          onClick={() => fetchArticleHistory(article.id)}
-          disabled={isLoadingHistory}
-        >
-          {isLoadingHistory ? (
-            <CircularProgress size="small" />
-          ) : (
-            "View Version History"
-          )}
-        </Button>
-        <FavoriteButton articleId={article.id} />
+        {isEditing ? (
+          <EditArticle
+            isEditing={isEditing}
+            setIsEditing={setIsEditing}
+            articleId={article.id}
+          />
+        ) : (
+          <div style={{ width: "100%" }}>
+            <Button
+              variant="contained"
+              onClick={() => fetchArticleHistory(article.id)}
+              disabled={isLoadingHistory}
+            >
+              {isLoadingHistory ? (
+                <CircularProgress size="small" />
+              ) : (
+                "View Version History"
+              )}
+            </Button>
+            <FavoriteButton articleId={article.id} />{" "}
+          </div>
+        )}
       </CardActions>
 
       {articleHistory && (

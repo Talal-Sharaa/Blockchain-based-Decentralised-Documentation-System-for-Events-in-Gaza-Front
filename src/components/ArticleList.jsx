@@ -26,6 +26,7 @@ const ArticleList = () => {
   const [publisherNameToAddress, setPublisherNameToAddress] = useState({});
   const [selectedPublisher, setSelectedPublisher] = useState(null);
   const [articles, setArticles] = useState([]);
+  const [contract, setContract] = useState(null);
 
   const fetchPublishers = async () => {
     try {
@@ -33,7 +34,7 @@ const ArticleList = () => {
       const signer = await provider.getSigner();
       const contract = getContract(
         ContractABI.abi,
-        "0xEe41A8D2F47A7C950ef20DCe4F1b5AADB1fB535D",
+        "0x3EAbaDA033e098F63ec359c946398167A13dC5e0",
         signer
       );
 
@@ -68,7 +69,7 @@ const ArticleList = () => {
       const signer = await provider.getSigner();
       const contract = getContract(
         ContractABI.abi,
-        "0xEe41A8D2F47A7C950ef20DCe4F1b5AADB1fB535D",
+        "0x3EAbaDA033e098F63ec359c946398167A13dC5e0",
         signer
       );
 
@@ -100,6 +101,31 @@ const ArticleList = () => {
     }
   }, [publishers, selectedPublisher, fetchArticles]);
 
+  useEffect(() => {
+    const init = async () => {
+      const provider = await getProvider();
+      const contract = getContract(
+        ContractABI.abi,
+        "0x3EAbaDA033e098F63ec359c946398167A13dC5e0",
+        provider // No need for signer here
+      );
+
+      // Listen for ArticleUpdated event
+      const listener = (articleId) => {
+        console.log("ArticleUpdated event received for article:", articleId);
+        fetchArticles(); // Refetch articles on update
+      };
+
+      contract.on("ArticleUpdated", listener);
+
+      // Cleanup event listener
+      return () => {
+        contract.off("ArticleUpdated", listener);
+      };
+    };
+
+    init();
+  }, [fetchArticles]); // Add fetchArticles as a dependency
   return (
     <Box sx={{ p: 2 }}>
       {" "}
@@ -110,7 +136,12 @@ const ArticleList = () => {
       <FormControl fullWidth sx={{ mb: 2 }}>
         {" "}
         {/* Form for publisher selection */}
-        <InputLabel id="publisher-select-label" style={{color:"#F5F5F5", opacity:"0.2"}}>Select Publisher</InputLabel>
+        <InputLabel
+          id="publisher-select-label"
+          style={{ color: "#F5F5F5", opacity: "0.2" }}
+        >
+          Select Publisher
+        </InputLabel>
         <Select
           labelId="publisher-select-label"
           value={selectedPublisher || ""} // Handle empty value

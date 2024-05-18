@@ -1,14 +1,10 @@
 import React, { useState, useEffect } from "react";
 import { getContract, getProvider } from "../utils/Web3Utils.js";
 import ContractABI from "../utils/NewsPlatform.json";
-
-// Material UI imports
-import TextField from "@mui/material/TextField";
-import TextareaAutosize from "@mui/material/TextareaAutosize";
-import Button from "@mui/material/Button";
-import Grid from "@mui/material/Grid";
+import { Button, TextField, CircularProgress, Box, Grid } from "@mui/material";
 
 const EditArticle = ({ articleId }) => {
+  const [latestArticle, setLatestArticle] = useState(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isPublisher, setIsPublisher] = useState(false);
@@ -16,82 +12,107 @@ const EditArticle = ({ articleId }) => {
   const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
-    checkPublisher();
-  }, []);
+    const fetchLatestArticle = async () => {
+      const provider = await getProvider();
+      const signer = await provider.getSigner();
+      const contract = getContract(
+        ContractABI.abi,
+        "0x3EAbaDA033e098F63ec359c946398167A13dC5e0",
+        signer
+      );
 
-  const checkPublisher = async () => {
-    const provider = await getProvider();
-    const signer = await provider.getSigner();
-    const contract = getContract(
-      ContractABI.abi,
-      "0xEe41A8D2F47A7C950ef20DCe4F1b5AADB1fB535D",
-      signer
-    );
+      const articleHistory = await contract.getArticleHistory(articleId);
+      const latestVersion = articleHistory[articleHistory.length - 1];
+      const article = await contract.getArticle(articleId);
+      setLatestArticle(latestVersion);
+      setTitle(latestVersion.title);
+      setContent(latestVersion.content);
+      const currentAccount = await signer.getAddress();
+      setIsPublisher(
+        currentAccount.toLowerCase() === article.publisherID.toLowerCase()
+      );
+      setIsLoading(false);
+    };
 
-    const article = await contract.getArticle(articleId);
-    const currentAccount = await signer.getAddress();
-    setIsPublisher(
-      currentAccount.toLowerCase() === article.publisherID.toLowerCase()
-    );
-    setIsLoading(false);
-  };
+    fetchLatestArticle();
+  }, [articleId]);
 
-  const updateArticle = async () => {
-    const provider = await getProvider();
-    const signer = await provider.getSigner();
-    const contract = getContract(
-      ContractABI.abi,
-      "0xEe41A8D2F47A7C950ef20DCe4F1b5AADB1fB535D",
-      signer
-    );
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsLoading(true);
+    try {
+      const provider = await getProvider();
+      const signer = await provider.getSigner();
+      const contract = getContract(
+        ContractABI.abi,
+        "0x3EAbaDA033e098F63ec359c946398167A13dC5e0",
+        signer
+      );
 
-    await contract.updateArticle(articleId, title, content);
-    setIsEditing(false);
+      const tx = await contract.updateArticle(articleId, title, content);
+      await tx.wait();
+
+      setIsLoading(false);
+      setIsEditing(false);
+    } catch (error) {
+      console.error("Error updating article:", error);
+      setIsLoading(false);
+    }
   };
 
   if (isLoading) {
-    return <div>Loading...</div>;
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "50vh",
+        }}
+      >
+        <CircularProgress />
+      </Box>
+    );
   }
 
-  return (
-    <Grid container spacing={2} alignItems="center" justifyContent="center">
-      {isPublisher ? (
-        isEditing ? (
-          <>
-            <Grid item xs={12}>
-              <TextField
-                fullWidth
-                label="Title"
-                value={title}
-                onChange={(e) => setTitle(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <TextareaAutosize
-                minRows={4}
-                style={{ width: "100%" }}
-                value={content}
-                onChange={(e) => setContent(e.target.value)}
-              />
-            </Grid>
-            <Grid item xs={12}>
-              <Button variant="contained" onClick={updateArticle}>
-                Update Article
-              </Button>
-            </Grid>
-          </>
-        ) : (
+// ...
+return (
+  <Grid container spacing={2} alignItems="center" justifyContent="center">
+    {isPublisher ? (
+      isEditing ? (
+        <form onSubmit={handleSubmit}>
+          {/* ... */}
           <Grid item xs={12}>
-            <Button variant="outlined" onClick={() => setIsEditing(true)}>
-              Edit Article
+            <Button
+              type="submit"
+              variant="contained"
+              color="primary"
+              disabled={isLoading}
+            >
+              {isLoading ? (
+                <CircularProgress size="small" />
+              ) : (
+                "Update Article"
+              )}
+            </Button>
+            <Button onClick={() => setIsEditing(!isEditing)}>
+              Cancel Editing
             </Button>
           </Grid>
-        )
+        </form>
       ) : (
-        <div>You are not the publisher of this article.</div>
-      )}
-    </Grid>
-  );
+        <Grid item xs={12}>
+          <Button variant="outlined" onClick={() => setIsEditing(true)}>
+            Edit Article
+          </Button>
+        </Grid>
+      )
+    ) : (
+      <></>
+    )}
+  </Grid>
+);
+// ...
 };
 
 export default EditArticle;

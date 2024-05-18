@@ -23,7 +23,7 @@ const Article = ({ article }) => {
       const provider = await getProvider();
       const contract = getContract(
         ContractABI.abi,
-        "0x3EAbaDA033e098F63ec359c946398167A13dC5e0",
+        "0x562aEEb1565bd0d6657104d008fE550CC803B748",
         provider
       );
       const history = await contract.getArticleHistory(articleId);

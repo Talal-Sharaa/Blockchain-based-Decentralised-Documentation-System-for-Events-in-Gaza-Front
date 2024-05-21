@@ -24,7 +24,7 @@ const MyArticles = () => {
   const [contract, setContract] = useState(null);
   const [showHistory, setShowHistory] = useState(null);
   const [tabIndex, setTabIndex] = useState(0); // State to track the selected tab
-  const [isEditing, setIsEditing] = useState(false);
+  const [isEditing, setIsEditing] = useState("");
 
   const fetchArticles = async () => {
     const provider = await getProvider();
@@ -128,10 +128,12 @@ const MyArticles = () => {
                 <CardHeader title={article.title} />
                 <CardContent>
                   <Typography variant="body2">{article.content}</Typography>
-                  {isEditing ? <EditArticle articleId={article.id} /> : null}
-                  <button onClick={() => setIsEditing(!isEditing)}>
-                    {isEditing ? "Cancel Editing" : "Edit Article"}
-                  </button>{" "}
+                    <EditArticle
+                      articleId={article.id}
+                      isEditing={isEditing}
+                      setIsEditing={setIsEditing}
+                    />
+
                   <Button onClick={() => setShowHistory(article.id)}>
                     View History
                   </Button>

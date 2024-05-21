@@ -3,13 +3,12 @@ import { getContract, getProvider } from "../utils/Web3Utils.js";
 import ContractABI from "../utils/NewsPlatform.json";
 import { Button, TextField, CircularProgress, Box, Grid } from "@mui/material";
 
-const EditArticle = ({ articleId }) => {
+const EditArticle = ({ articleId, isEditing, setIsEditing }) => {
   const [latestArticle, setLatestArticle] = useState(null);
   const [title, setTitle] = useState("");
   const [content, setContent] = useState("");
   const [isPublisher, setIsPublisher] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
-  const [isEditing, setIsEditing] = useState(false);
 
   useEffect(() => {
     const fetchLatestArticle = async () => {
@@ -45,7 +44,7 @@ const EditArticle = ({ articleId }) => {
       const signer = await provider.getSigner();
       const contract = getContract(
         ContractABI.abi,
-        "0x562aEEb1565bd0d6657104d008fE550CC803B748",
+        "0x9d3A330c215936254C5Ac5De78c1e98f6eB1BfF5",
         signer
       );
 
@@ -75,44 +74,57 @@ const EditArticle = ({ articleId }) => {
     );
   }
 
-// ...
-return (
-  <Grid container spacing={2} alignItems="center" justifyContent="center">
-    {isPublisher ? (
-      isEditing ? (
-        <form onSubmit={handleSubmit}>
-          {/* ... */}
+  return (
+    <Grid container spacing={2} alignItems="center" justifyContent="center">
+      {isPublisher ? (
+        isEditing ? (
+          <form onSubmit={handleSubmit}>
+            <Grid item xs={12}>
+              <TextField
+                label="Title"
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <TextField
+                label="Content"
+                value={content}
+                onChange={(e) => setContent(e.target.value)}
+                multiline
+                rows={4}
+                fullWidth
+              />
+            </Grid>
+            <Grid item xs={12}>
+              <Button
+                type="submit"
+                variant="contained"
+                color="primary"
+                disabled={isLoading}
+              >
+                {isLoading ? (
+                  <CircularProgress size="small" />
+                ) : (
+                  "Update Article"
+                )}
+              </Button>
+              <Button onClick={() => setIsEditing(false)}>
+                Cancel Editing
+              </Button>
+            </Grid>
+          </form>
+        ) : (
           <Grid item xs={12}>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              disabled={isLoading}
-            >
-              {isLoading ? (
-                <CircularProgress size="small" />
-              ) : (
-                "Update Article"
-              )}
-            </Button>
-            <Button onClick={() => setIsEditing(!isEditing)}>
-              Cancel Editing
+            <Button variant="outlined" onClick={() => setIsEditing(true)}>
+              Edit Article
             </Button>
           </Grid>
-        </form>
-      ) : (
-        <Grid item xs={12}>
-          <Button variant="outlined" onClick={() => setIsEditing(true)}>
-            Edit Article
-          </Button>
-        </Grid>
-      )
-    ) : (
-      <></>
-    )}
-  </Grid>
-);
-// ...
+        )
+      ) : null}
+    </Grid>
+  );
 };
 
 export default EditArticle;

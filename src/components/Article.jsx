@@ -16,6 +16,7 @@ const Article = ({ article }) => {
   const [articleHistory, setArticleHistory] = useState(null);
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
+  const [isPublisher, setIsPublisher] = useState(false);
 
   const fetchArticleHistory = async (articleId) => {
     setIsLoadingHistory(true);
@@ -35,6 +36,19 @@ const Article = ({ article }) => {
     }
   };
 
+  useEffect(() => {
+    const checkPublisher = async () => {
+      const provider = await getProvider();
+      const signer = await provider.getSigner();
+      const currentAccount = await signer.getAddress();
+
+      setIsPublisher(
+        currentAccount.toLowerCase() === article.publisherID.toLowerCase()
+      );
+    };
+    checkPublisher();
+  }, [article.publisherID]);
+
   return (
     <Card>
       <CardContent>
@@ -46,28 +60,27 @@ const Article = ({ article }) => {
         </Typography>
       </CardContent>
       <CardActions sx={{ display: "flex", justifyContent: "space-between" }}>
-        {isEditing ? (
+        {isPublisher && (
           <EditArticle
+            articleId={article.id}
             isEditing={isEditing}
             setIsEditing={setIsEditing}
-            articleId={article.id}
           />
-        ) : (
-          <div style={{ width: "100%" }}>
-            <Button
-              variant="contained"
-              onClick={() => fetchArticleHistory(article.id)}
-              disabled={isLoadingHistory}
-            >
-              {isLoadingHistory ? (
-                <CircularProgress size="small" />
-              ) : (
-                "View Version History"
-              )}
-            </Button>
-            <FavoriteButton articleId={article.id} />{" "}
-          </div>
         )}
+        <div style={{ width: "100%" }}>
+          <Button
+            variant="contained"
+            onClick={() => fetchArticleHistory(article.id)}
+            disabled={isLoadingHistory}
+          >
+            {isLoadingHistory ? (
+              <CircularProgress size="small" />
+            ) : (
+              "View Version History"
+            )}
+          </Button>
+          <FavoriteButton articleId={article.id} />
+        </div>
       </CardActions>
 
       {articleHistory && (

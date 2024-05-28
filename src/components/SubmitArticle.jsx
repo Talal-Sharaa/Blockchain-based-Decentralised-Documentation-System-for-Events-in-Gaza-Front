@@ -82,6 +82,11 @@ const SubmitArticle = () => {
                     opacity: isFocused ? "1.0" : "0.2",
                   },
                 }}
+                inputProps={{
+                  style: {
+                    color: "#f8f8ff",
+                  },
+                }}
               />
             </Grid>
             <Grid item xs={12}>

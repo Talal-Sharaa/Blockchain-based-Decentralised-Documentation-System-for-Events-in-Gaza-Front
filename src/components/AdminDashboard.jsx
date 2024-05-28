@@ -80,6 +80,11 @@ const AdminDashboard = () => {
                 opacity: isFocused1 ? "1.0" : "0.2",
               },
             }}
+            inputProps={{
+              style: {
+                color: "#f8f8ff",
+              },
+            }}
           />
           <Button type="submit" variant="contained" sx={{ mt: 1 }}>
             Grant Admin Role
@@ -105,6 +110,11 @@ const AdminDashboard = () => {
                 opacity: isFocused2 ? "1.0" : "0.2",
               },
             }}
+            inputProps={{
+              style: {
+                color: "#f8f8ff",
+              },
+            }}
           />
           <TextField
             style={{ marginTop: "2.3vh" }}
@@ -119,6 +129,11 @@ const AdminDashboard = () => {
               style: {
                 color: isFocused3 ? "#1976D2" : "#f8f8ff",
                 opacity: isFocused3 ? "1.0" : "0.2",
+              },
+            }}
+            inputProps={{
+              style: {
+                color: "#f8f8ff",
               },
             }}
           />

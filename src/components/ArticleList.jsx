@@ -34,7 +34,7 @@ const ArticleList = () => {
       const signer = await provider.getSigner();
       const contract = getContract(
         ContractABI.abi,
-        "0x9d3A330c215936254C5Ac5De78c1e98f6eB1BfF5",
+        "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
         signer
       );
 
@@ -69,7 +69,7 @@ const ArticleList = () => {
       const signer = await provider.getSigner();
       const contract = getContract(
         ContractABI.abi,
-        "0x9d3A330c215936254C5Ac5De78c1e98f6eB1BfF5",
+        "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
         signer
       );
 
@@ -106,7 +106,7 @@ const ArticleList = () => {
       const provider = await getProvider();
       const contract = getContract(
         ContractABI.abi,
-        "0x9d3A330c215936254C5Ac5De78c1e98f6eB1BfF5",
+        "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
         provider // No need for signer here
       );
 

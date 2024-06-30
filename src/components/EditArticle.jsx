@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { getContract, getProvider } from "../utils/Web3Utils.js";
 import ContractABI from "../utils/NewsPlatform.json";
 import { Button, TextField, CircularProgress, Box, Grid } from "@mui/material";
+import { useContract } from "../utils/ContractContext";
 
 const EditArticle = ({ articleId, isEditing, setIsEditing }) => {
   const [latestArticle, setLatestArticle] = useState(null);
@@ -9,16 +10,13 @@ const EditArticle = ({ articleId, isEditing, setIsEditing }) => {
   const [content, setContent] = useState("");
   const [isPublisher, setIsPublisher] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const contractAddress = useContract();
 
   useEffect(() => {
     const fetchLatestArticle = async () => {
       const provider = await getProvider();
       const signer = await provider.getSigner();
-      const contract = getContract(
-        ContractABI.abi,
-        "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
-        signer
-      );
+      const contract = getContract(ContractABI.abi, contractAddress, signer);
 
       const articleHistory = await contract.getArticleHistory(articleId);
       const latestVersion = articleHistory[articleHistory.length - 1];
@@ -42,11 +40,7 @@ const EditArticle = ({ articleId, isEditing, setIsEditing }) => {
     try {
       const provider = await getProvider();
       const signer = await provider.getSigner();
-      const contract = getContract(
-        ContractABI.abi,
-        "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
-        signer
-      );
+      const contract = getContract(ContractABI.abi, contractAddress, signer);
 
       const tx = await contract.updateArticle(articleId, title, content);
       await tx.wait();

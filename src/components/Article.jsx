@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import EditArticle from "./EditArticle";
 import { getContract, getProvider } from "../utils/Web3Utils.js";
 import ContractABI from "../utils/NewsPlatform.json";
+import { useContract } from "../utils/ContractContext";
 import {
   Button,
   Card,
@@ -17,16 +18,13 @@ const Article = ({ article }) => {
   const [isLoadingHistory, setIsLoadingHistory] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [isPublisher, setIsPublisher] = useState(false);
+  const contractAddress = useContract();
 
   const fetchArticleHistory = async (articleId) => {
     setIsLoadingHistory(true);
     try {
       const provider = await getProvider();
-      const contract = getContract(
-        ContractABI.abi,
-        "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
-        provider
-      );
+      const contract = getContract(ContractABI.abi, contractAddress, provider);
       const history = await contract.getArticleHistory(articleId);
       setArticleHistory(history);
     } catch (error) {

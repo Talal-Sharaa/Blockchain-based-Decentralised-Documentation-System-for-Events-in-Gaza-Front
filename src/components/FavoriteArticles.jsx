@@ -10,12 +10,14 @@ import CircularProgress from "@mui/material/CircularProgress";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import ArticleHistory from "./ArticleHistory"; // Import the ArticleHistory component
+import { useContract } from "../utils/ContractContext";
 
 const FavoriteArticles = () => {
   const [articles, setArticles] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
   const [contract, setContract] = useState(null);
   const [selectedArticleId, setSelectedArticleId] = useState(null); // State to track selected article for history
+  const contractAddress = useContract();
 
   useEffect(() => {
     const init = async () => {
@@ -23,7 +25,7 @@ const FavoriteArticles = () => {
       const signer = await provider.getSigner();
       const newsContract = getContract(
         ContractABI.abi,
-        "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
+        contractAddress,
         signer
       );
       setContract(newsContract);

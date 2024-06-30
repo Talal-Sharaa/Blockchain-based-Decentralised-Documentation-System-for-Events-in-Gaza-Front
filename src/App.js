@@ -9,19 +9,17 @@ import ProtectedRoute from "./components/ProtectedRoute"; // Import your Protect
 import { getProvider, getContract, getUserRole } from "./utils/Web3Utils";
 import ContractABI from "./utils/NewsPlatform.json";
 import FavoriteArticles from "./components/FavoriteArticles";
+import { ContractProvider, useContract } from "./utils/ContractContext";
 const App = () => {
   const [userRole, setUserRole] = useState(null);
+  const contractAddress = useContract();
 
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
         const provider = await getProvider();
         const signer = await provider.getSigner();
-        const contract = getContract(
-          ContractABI.abi,
-          "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
-          signer
-        );
+        const contract = getContract(ContractABI.abi, contractAddress, signer);
 
         const address = await signer.getAddress();
         const role = await getUserRole(contract, address);
@@ -36,57 +34,55 @@ const App = () => {
   }, []);
 
   return (
-    <Router>
-      <NavBar />
-      <Routes>
-        {/* Home/Default/Guest route */}
-        <Route path="/articles" element={<ArticleList />} />
+    <ContractProvider>
+      <Router>
+        <NavBar />
+        <Routes>
+          {/* Home/Default/Guest route */}
+          <Route path="/articles" element={<ArticleList />} />
 
-        {/* Protected Routes */}
-        <Route
-          path="/"
-          element={
-            <ProtectedRoute userRole={userRole} allowedRoles={["ADMIN"]}>
-              <AdminDashboard />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/submit-article"
-          element={
-            <ProtectedRoute
-              userRole={userRole}
-              allowedRoles={["ADMIN", "PUBLISHER"]}
-            >
-              <SubmitArticle />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/my-articles"
-          element={
-            <ProtectedRoute
-              userRole={userRole}
-              allowedRoles={["ADMIN", "PUBLISHER"]}
-            >
-              <MyArticles />
-            </ProtectedRoute>
-          }
-        />
-        <Route
-          path="/favourite-articles"
-          element={
-            <ProtectedRoute
-              userRole={userRole}
-              allowedRoles={["GUEST"]}
-            >
-              <FavoriteArticles />
-            </ProtectedRoute>
-          }
-        />
-
-      </Routes>
-    </Router>
+          {/* Protected Routes */}
+          <Route
+            path="/"
+            element={
+              <ProtectedRoute userRole={userRole} allowedRoles={["ADMIN"]}>
+                <AdminDashboard />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/submit-article"
+            element={
+              <ProtectedRoute
+                userRole={userRole}
+                allowedRoles={["ADMIN", "PUBLISHER"]}
+              >
+                <SubmitArticle />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/my-articles"
+            element={
+              <ProtectedRoute
+                userRole={userRole}
+                allowedRoles={["ADMIN", "PUBLISHER"]}
+              >
+                <MyArticles />
+              </ProtectedRoute>
+            }
+          />
+          <Route
+            path="/favourite-articles"
+            element={
+              <ProtectedRoute userRole={userRole} allowedRoles={["GUEST"]}>
+                <FavoriteArticles />
+              </ProtectedRoute>
+            }
+          />
+        </Routes>
+      </Router>
+    </ContractProvider>
   );
 };
 

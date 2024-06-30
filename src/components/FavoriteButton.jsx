@@ -2,12 +2,14 @@ import React, { useState, useEffect } from "react";
 import { getContract, getProvider } from "../utils/Web3Utils.js";
 import ContractABI from "../utils/NewsPlatform.json";
 import { Button, CircularProgress } from "@mui/material";
+import { useContract } from "../utils/ContractContext";
 
 const FavoriteButton = ({ articleId }) => {
   const [isFavorited, setIsFavorited] = useState(false);
   const [isLoadingFavorite, setIsLoadingFavorite] = useState(false);
   const [provider, setProvider] = useState(null);
   const [contract, setContract] = useState(null);
+  const contractAddress = useContract();
 
   useEffect(() => {
     const checkFavoriteStatus = async () => {
@@ -18,7 +20,7 @@ const FavoriteButton = ({ articleId }) => {
         const signer = await provider.getSigner();
         const contract = getContract(
           ContractABI.abi,
-          "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
+          contractAddress,
           signer
         );
         setContract(contract);

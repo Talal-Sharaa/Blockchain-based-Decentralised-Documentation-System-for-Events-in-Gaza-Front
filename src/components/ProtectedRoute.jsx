@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from "react";
 import PropTypes from "prop-types";
 import Navigate from "./NavBar";
-import WarningSign from './WarningSign'; // Import your WarningSign component
+import WarningSign from "./WarningSign"; // Import your WarningSign component
 import { getProvider, getContract, getUserRole } from "../utils/Web3Utils";
 import ContractABI from "../utils/NewsPlatform.json"; // Import your contract's ABI
+import { useContract } from "../utils/ContractContext";
 
 const ProtectedRoute = ({
   userRole: initialUserRole,
@@ -12,17 +13,14 @@ const ProtectedRoute = ({
 }) => {
   const [isLoadingRole, setIsLoadingRole] = useState(true);
   const [userRole, setUserRole] = useState(initialUserRole);
+  const contractAddress = useContract();
 
   useEffect(() => {
     const fetchUserRole = async () => {
       try {
         const provider = await getProvider();
         const signer = await provider.getSigner();
-        const contract = getContract(
-          ContractABI.abi,
-          "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
-          signer
-        );
+        const contract = getContract(ContractABI.abi, contractAddress, signer);
 
         const address = await signer.getAddress();
         const role = await getUserRole(contract, address);

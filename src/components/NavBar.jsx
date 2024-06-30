@@ -12,10 +12,13 @@ import Tab from "@mui/material/Tab";
 import Box from "@mui/material/Box";
 import { useLocation } from "react-router-dom"; // Import useLocation
 import "./NavBar.css";
+import { useContract } from "../utils/ContractContext";
+
 const NavBar = () => {
   const [userRole, setUserRole] = useState(null);
   const [value, setValue] = useState(0); // For managing selected tab
   const location = useLocation(); // Get location using hook
+  const contractAddress = useContract();
 
   useEffect(() => {
     const fetchUserRole = async () => {
@@ -24,7 +27,7 @@ const NavBar = () => {
         const signer = await provider.getSigner();
         const contract = getContract(
           ContractABI.abi,
-          "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
+          contractAddress,
           signer
         );
 
@@ -74,7 +77,7 @@ const NavBar = () => {
             {(userRole === "ADMIN" || userRole === "PUBLISHER") && (
               <Tab label="My Articles" to="/my-articles" component={Link} />
             )}
-            {(userRole !== "ADMIN" && userRole !== "PUBLISHER") && (
+            {userRole !== "ADMIN" && userRole !== "PUBLISHER" && (
               <Tab
                 label="My Favourite"
                 to="/favourite-articles"

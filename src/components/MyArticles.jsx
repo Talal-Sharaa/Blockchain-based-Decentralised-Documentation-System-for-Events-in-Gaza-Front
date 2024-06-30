@@ -17,6 +17,7 @@ import {
   Box,
   Button,
 } from "@mui/material";
+import { useContract } from "../utils/ContractContext";
 
 const MyArticles = () => {
   const [articles, setArticles] = useState([]);
@@ -25,13 +26,14 @@ const MyArticles = () => {
   const [showHistory, setShowHistory] = useState(null);
   const [tabIndex, setTabIndex] = useState(0); // State to track the selected tab
   const [isEditing, setIsEditing] = useState("");
+  const contractAddress = useContract();
 
   const fetchArticles = async () => {
     const provider = await getProvider();
     const signer = await provider.getSigner();
     const contract = getContract(
       ContractABI.abi,
-      "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
+      contractAddress,
       signer
     );
 
@@ -55,7 +57,7 @@ const MyArticles = () => {
       const signer = await provider.getSigner();
       const newsContract = getContract(
         ContractABI.abi,
-        "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
+        contractAddress,
         signer
       );
       setContract(newsContract);

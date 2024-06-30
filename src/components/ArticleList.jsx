@@ -4,6 +4,7 @@ import {
   getProvider,
   getArticlesByName,
 } from "../utils/Web3Utils.js";
+import { useContract } from "../utils/ContractContext";
 import ContractABI from "../utils/NewsPlatform.json";
 import "water.css/out/water.css";
 import Article from "./Article"; // Import the Article component
@@ -27,16 +28,13 @@ const ArticleList = () => {
   const [selectedPublisher, setSelectedPublisher] = useState(null);
   const [articles, setArticles] = useState([]);
   const [contract, setContract] = useState(null);
+  const contractAddress = useContract();
 
   const fetchPublishers = async () => {
     try {
       const provider = await getProvider();
       const signer = await provider.getSigner();
-      const contract = getContract(
-        ContractABI.abi,
-        "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
-        signer
-      );
+      const contract = getContract(ContractABI.abi, contractAddress, signer);
 
       const fetchedPublishers = await contract.getAllPublishers();
       setIsLoading(true);
@@ -67,11 +65,7 @@ const ArticleList = () => {
 
       const provider = await getProvider();
       const signer = await provider.getSigner();
-      const contract = getContract(
-        ContractABI.abi,
-        "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
-        signer
-      );
+      const contract = getContract(ContractABI.abi, contractAddress, signer);
 
       const fetchedArticles = await getArticlesByName(
         contract,
@@ -106,7 +100,7 @@ const ArticleList = () => {
       const provider = await getProvider();
       const contract = getContract(
         ContractABI.abi,
-        "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
+        contractAddress,
         provider // No need for signer here
       );
 
@@ -125,7 +119,7 @@ const ArticleList = () => {
     };
 
     init();
-  }, [fetchArticles]); // Add fetchArticles as a dependency
+  }, [fetchArticles]);
   return (
     <Box sx={{ p: 2 }}>
       {" "}

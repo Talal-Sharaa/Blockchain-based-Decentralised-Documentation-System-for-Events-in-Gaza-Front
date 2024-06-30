@@ -7,6 +7,7 @@ import TextareaAutosize from "@mui/material/TextareaAutosize";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
 import "water.css/out/water.css";
+import { useContract } from "../utils/ContractContext";
 
 const SubmitArticle = () => {
   const [contract, setContract] = useState(null);
@@ -15,6 +16,7 @@ const SubmitArticle = () => {
   const [content, setContent] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFocused, setIsFocused] = useState(false);
+  const contractAddress = useContract();
 
   useEffect(() => {
     const init = async () => {
@@ -26,7 +28,7 @@ const SubmitArticle = () => {
 
       const newsContract = getContract(
         ContractABI.abi,
-        "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
+        contractAddress,
         signer
       );
       setContract(newsContract);

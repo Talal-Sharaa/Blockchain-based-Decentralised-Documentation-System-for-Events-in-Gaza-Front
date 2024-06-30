@@ -8,9 +8,11 @@ import {
   ListItemSecondaryAction,
   Typography,
 } from "@mui/material";
+import { useContract } from "../utils/ContractContext";
 
 const ArticleHistory = ({ articleId }) => {
   const [history, setHistory] = useState([]);
+  const contractAddress = useContract();
 
   useEffect(() => {
     const fetchHistory = async () => {
@@ -18,7 +20,7 @@ const ArticleHistory = ({ articleId }) => {
       const signer = await provider.getSigner();
       const contract = getContract(
         ContractABI.abi,
-        "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
+        contractAddress,
         signer
       );
 

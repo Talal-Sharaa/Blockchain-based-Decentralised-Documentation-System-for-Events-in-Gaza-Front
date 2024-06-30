@@ -3,6 +3,7 @@ import { TextField, Button, Grid, Typography } from "@mui/material";
 import { getContract, getProvider } from "../utils/Web3Utils.js";
 import ContractABI from "../utils/NewsPlatform.json"; // Import your contract's ABI
 import "./AdminDashboard.css";
+import { useContract } from "../utils/ContractContext";
 
 const AdminDashboard = () => {
   const [contract, setContract] = useState(null);
@@ -12,6 +13,7 @@ const AdminDashboard = () => {
   const [isFocused1, setIsFocused1] = useState(false);
   const [isFocused2, setIsFocused2] = useState(false);
   const [isFocused3, setIsFocused3] = useState(false);
+  const contractAddress = useContract();
 
   useEffect(() => {
     const init = async () => {
@@ -21,7 +23,7 @@ const AdminDashboard = () => {
 
       const newsContract = getContract(
         ContractABI.abi,
-        "0x9C49B8001f86Eea9A9C3E94b5236fF8D5141c425",
+        contractAddress,
         signer
       );
       setContract(newsContract);

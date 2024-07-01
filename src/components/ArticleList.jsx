@@ -6,7 +6,7 @@ import {
 } from "../utils/Web3Utils.js";
 import { useContract } from "../utils/ContractContext";
 import ContractABI from "../utils/NewsPlatform.json";
-import "water.css/out/water.css";
+import "water.css/out/dark.css";
 import Article from "./Article"; // Import the Article component
 
 // Import Material-UI components

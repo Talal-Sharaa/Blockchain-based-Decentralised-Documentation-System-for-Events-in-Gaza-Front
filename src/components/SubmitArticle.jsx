@@ -6,7 +6,7 @@ import TextField from "@mui/material/TextField";
 import TextareaAutosize from "@mui/material/TextareaAutosize";
 import Button from "@mui/material/Button";
 import Grid from "@mui/material/Grid";
-import "water.css/out/water.css";
+import "water.css/out/dark.css";
 import { useContract } from "../utils/ContractContext";
 
 const SubmitArticle = () => {

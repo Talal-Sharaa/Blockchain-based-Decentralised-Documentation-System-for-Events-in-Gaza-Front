@@ -3,6 +3,8 @@ import EditArticle from "./EditArticle";
 import { getContract, getProvider } from "../utils/Web3Utils.js";
 import ContractABI from "../utils/NewsPlatform.json";
 import { useContract } from "../utils/ContractContext";
+import ArticleHistory from "./ArticleHistory";
+
 import {
   Button,
   Card,
@@ -19,6 +21,7 @@ const Article = ({ article }) => {
   const [isEditing, setIsEditing] = useState(false);
   const [isPublisher, setIsPublisher] = useState(false);
   const contractAddress = useContract();
+  const [showHistory, setShowHistory] = useState(null);
 
   const fetchArticleHistory = async (articleId) => {
     setIsLoadingHistory(true);
@@ -66,47 +69,15 @@ const Article = ({ article }) => {
           />
         )}
         <div style={{ width: "100%" }}>
-          <Button
-            variant="contained"
-            onClick={() => fetchArticleHistory(article.id)}
-            disabled={isLoadingHistory}
-          >
-            {isLoadingHistory ? (
-              <CircularProgress size="small" />
-            ) : (
-              "View Version History"
-            )}
-          </Button>
           <FavoriteButton articleId={article.id} />
         </div>
       </CardActions>
-
-      {articleHistory && (
-        <CardContent>
-          <Typography variant="h6" gutterBottom>
-            Version History
-          </Typography>
-          {articleHistory.map((version) => (
-            <div key={version.versionNumber}>
-              <Typography variant="subtitle1" gutterBottom>
-                Version {version.versionNumber}
-              </Typography>
-              <Typography variant="body2" gutterBottom>
-                {version.title}
-              </Typography>
-              <Typography variant="body2" component="p">
-                {version.content}
-              </Typography>
-              <Typography variant="caption" display="block">
-                Edited by: {version.editorID}
-              </Typography>
-              <Typography variant="caption" display="block">
-                Timestamp: {version.editTimestamp}
-              </Typography>
-            </div>
-          ))}
-        </CardContent>
-      )}
+      <Button
+      variant="contained"
+       onClick={() => setShowHistory(article.id)}>View History</Button>
+      {showHistory === article.id && (
+        <ArticleHistory articleId={article.id} />
+      )}{" "}
     </Card>
   );
 };
